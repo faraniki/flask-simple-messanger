@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div class="container">
+    <div class="message-box">
+        {% for chat in chats%}
+        <li id="chat-li"><a id="chat-a" href="{{ url_for('im', cel=chat.id) }}">{{ chat.name }}</a></li>
+        {% endfor %}
+    </div>
+</div>
+
+
+{% endblock %}

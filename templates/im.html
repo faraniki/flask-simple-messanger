@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<div class="container">
+    <div class="invite-box"><a href="{{ url_for('invite', cel=cel) }}">Invite user</a></div>
+    <div class="message-box">
+        <ul>
+        {% for message in messages %}
+            <li>
+                <div class="message">
+                    <div style="display: flex; flex-direction: row;">
+                        {% if current_user.icon %}
+                            <img src="imgs/icons/{ current_user.id }/{ current_user.icon }", style="width: 20px; height: 20px;">
+                        {% else %}
+                            <img src="/static/imgs/icons/anonymous.png", style="width: 20px; height: 20px;">
+                        {% endif %}
+                        <div style="display:flex; flex-direction: column;">
+                            <span style="display: flex; align-items: space-around;">
+                                {% if message.user_id == current_user.id %}
+                                    <a class="name" style="top: 0;">You</a>
+                                {% else %}
+                                    <a class="name" style="top: 0;">{{ message.user_id }}</a>
+                                {% endif %}
+                                <a class="dt" style="top: 0;">{{message.dt}}</a>
+                            </span>
+                            <a class="text">{{message.text}}</a>
+                        </div>
+                    </div>
+                </div>
+            </li>
+        {% endfor %}
+        </ul>asd
+    </div>
+    <div class="send-box">
+        <form class="send-form" method="POST">
+            {{ form.text }}
+            {{ form.submit }}
+        </form>
+    </div>
+</div>
+
+{% endblock %}
