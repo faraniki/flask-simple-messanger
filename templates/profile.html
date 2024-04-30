@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+<div style="display: flex; width: 100%; height: 100%; justify-content: center;">
+    <div style="width: 50%; height: 60%; position: absolute; top: 200px; display: flex; flex-direction: column;">
+        <div style="display: flex; background-color: red;">
+            <img src="/static/imgs/icons/anonymous.png" style="margin-top: -70px; height: 100px; width: 100px; border-radius: 50%; border: solid 3px black;">
+            <a style="width: 100%;">{{ user.login }}</a>
+        </div>
+        <div style="height: 100%; background-color: violet; overflow-y: scroll; overflow-x: hidden;">
+            <ul style="padding: 20px; list-style-type: none; background-color: red;">
+                {% for post in posts %}
+                <li style="width: 100%; background-color: violet; word-break: break-all; margin-top: 5px;">
+                    {% for el in post.text.split("\n") %}
+                        {% if el == '\r' %}
+                            <br>
+                        {% else %}
+                            {{ el }}
+                        {% endif %}
+                    {% endfor %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% if current_user.login == login %}
+        <div class="send-box" style="width: 100%; background-color: pink;">
+            <form class="send-form" method="POST">
+                {{form.hidden_tag()}}
+                <div style="display: flex; align-items: center;">{{ form.text }} {{ form.submit }}</div>
+            </form>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<script src="/static/js/main.js"></script>
+{% endblock %}

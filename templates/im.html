@@ -2,43 +2,44 @@
 
 
 {% block content %}
-
-<div class="container">
-    <div class="invite-box"><a href="{{ url_for('invite', cel=cel) }}">Invite user</a></div>
-    <div class="message-box">
-        <ul>
-        {% for message in messages %}
-            <li>
-                <div class="message">
-                    <div style="display: flex; flex-direction: row;">
-                        {% if current_user.icon %}
-                            <img src="imgs/icons/{ current_user.id }/{ current_user.icon }", style="width: 20px; height: 20px;">
+<div class="container" style="width: 100%; height: 100%; display: flex; align-items: center; flex-direction: column;">
+    <div class="invite-box" style="background-color: pink; width: 50%; text-align: center;"><a href="{{ url_for('invite', cel=cel) }}">Invite user</a></div>
+    <div class="message-box" style="background-color: red; width: 50%; height: 80vh; overflow-y: scroll;">
+        {% for message_box in messages%}
+            <div style="background-color: yellow; margin: 20px; display: flex;">
+                <a href="{{ url_for('index', login=message_box[0].user_login) }}"><img src="/static/imgs/icons/anonymous.png" style="border-radius: 50%; height: 50px; width: 50px;" href=""></a>>
+                <div style="display: flex; flex-direction: column; width: 100%;">
+                    <span>
+                        {% if message_box[0].user_login == current_user.login %}
+                            <a style="padding-left: 20px;">You</a>
                         {% else %}
-                            <img src="/static/imgs/icons/anonymous.png", style="width: 20px; height: 20px;">
+                            <a style="padding-left: 20px;">{{ message_box[0].user_login }}</a>
                         {% endif %}
-                        <div style="display:flex; flex-direction: column;">
-                            <span style="display: flex; align-items: space-around;">
-                                {% if message.user_id == current_user.id %}
-                                    <a class="name" style="top: 0;">You</a>
+                        <a style="color: grey;">{{ message_box[0].dt }}</a>
+                    </span>
+                    <ul style="padding: 20px; padding-top: 0px; list-style-type: none;">
+                    {% for message in message_box %}
+                        <li style="width: 100%; background-color: violet; word-break: break-all; margin: 5px;">
+                            {% for el in message.text.split("\n") %}
+                                {% if el == '\r' %}
+                                    <br>
                                 {% else %}
-                                    <a class="name" style="top: 0;">{{ message.user_id }}</a>
+                                    {{ el }}
                                 {% endif %}
-                                <a class="dt" style="top: 0;">{{message.dt}}</a>
-                            </span>
-                            <a class="text">{{message.text}}</a>
-                        </div>
-                    </div>
+                            {% endfor %}
+                        </li>
+                    {% endfor %}
+                    </ul>
                 </div>
-            </li>
+            </div>
         {% endfor %}
-        </ul>asd
     </div>
-    <div class="send-box">
+    <div class="send-box" style="width: 50%; background-color: pink;">
         <form class="send-form" method="POST">
-            {{ form.text }}
-            {{ form.submit }}
+            {{form.hidden_tag()}}
+            <div style="display: flex; align-items: center;">{{ form.text }} {{ form.submit }}</div>
         </form>
     </div>
 </div>
-
+<script src="/static/js/main.js"></script>
 {% endblock %}
