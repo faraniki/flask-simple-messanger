@@ -30,13 +30,15 @@ authorized_headers = [{"url": "logout",
 @app.route("/<login>", methods=["POST", "GET"])
 def index(login):
     session = create_sesion()
-    if current_user.is_authenticated:
-        session.add(current_user)
 
     form = TextForm(request.form)
     user = session.query(User).filter(User.login == str(login)).first()
+    session.close()
 
     if current_user.is_authenticated:
+        session = create_sesion()
+
+        session.add(current_user)
         session.flush()
 
         if form.is_submitted():
@@ -46,15 +48,14 @@ def index(login):
 
             session.add(post)
             session.commit()
-            session.commit()
+            session.close()
             return redirect(url_for("index", login=login))
 
-        session.close()
         posts = session.query(Post).filter(Post.user_login == str(login)).all()
         return render_template("profile.html", title="beta v0.0.1", headers=authorized_headers, user=user, posts=posts, form=form, login=login)
     else:
         posts = session.query(Post).filter(Post.user_login == str(login)).all()
-        session.close()
+
         return render_template("profile.html", title="beta v0.0.1", headers=anonymous_headers, user=user, posts=posts, form=form, login=login)
 
 
