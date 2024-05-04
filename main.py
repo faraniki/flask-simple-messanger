@@ -27,6 +27,7 @@ authorized_headers = [{"url": "logout",
                        "name": "create chat"}]
 
 
+@app.route("/")
 @app.route("/<login>", methods=["POST", "GET"])
 def index(login):
     session = create_sesion()
@@ -57,7 +58,6 @@ def index(login):
         posts = session.query(Post).filter(Post.user_login == str(login)).all()
 
         return render_template("profile.html", title="beta v0.0.1", headers=anonymous_headers, user=user, posts=posts, form=form, login=login)
-
 
 
 
@@ -114,7 +114,7 @@ def im(cel):
     if not chat:
         session.close()
         return redirect(url_for("create_chat"))
-    if not f";{current_user.id};" in chat.users:
+    if not f";{current_user.login};" in chat.users:
         session.close()
         return "Вы не имеете доступа к данному чату"
     session.close()
@@ -128,7 +128,6 @@ def im(cel):
 
         message = Message()
         message.text = form.text.data
-        message.user_id = current_user.id
         message.user_login = current_user.login
         message.chat_id = cel
 
@@ -142,6 +141,9 @@ def im(cel):
     session.flush()
 
     messages = union_message(session.query(Message).filter(Message.chat_id == int(cel)).all())
+
+    for mes in messages:
+        print(type(mes[0].user_login), type(current_user.login))
 
     session.close()
     return render_template("im.html", form=form, messages=messages, cel=cel, headers=authorized_headers)
@@ -159,7 +161,7 @@ def create_chat():
 
         chat = Chat()
         chat.name = form.name.data
-        chat.users = ";" + str(current_user.id) + ";"
+        chat.users = ";" + str(current_user.login) + ";"
         session.add(chat)
         session.commit()
         session.close()
@@ -174,7 +176,7 @@ def chats():
     session.add(current_user)
     session.flush()
 
-    chats = session.query(Chat).filter(Chat.users.like(f"%;{current_user.id};%")).all()
+    chats = session.query(Chat).filter(Chat.users.like(f"%;{current_user.login};%")).all()
     session.close()
     return render_template("chats.html", chats=chats, headers=authorized_headers)
 
@@ -209,11 +211,11 @@ def invite(cel):
 
         current_chat = session.query(Chat).filter(Chat.id == int(cel)).first()
 
-        if not f";{current_user.id};" in current_chat.users:
+        if not f";{current_user.login};" in current_chat.users:
             session.close()
             return redirect(url_for("chats"))
 
-        current_chat.users += f";{form.user_id.data};"
+        current_chat.users += f";{form.user_login.data};"
         session.commit()
         session.close()
     return render_template("invite.html", form=form, headers=anonymous_headers)

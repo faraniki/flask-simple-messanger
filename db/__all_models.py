@@ -30,7 +30,7 @@ class Message(SqlAlchemyBase):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     text = db.Column(db.Text, nullable=True)
-    user_login = db.Column(db.Integer, db.ForeignKey('users.login'))
+    user_login = db.Column(db.String, db.ForeignKey('users.login'))
     chat_id = db.Column(db.Integer, db.ForeignKey('chats.id'))
     dt = db.Column(db.DateTime, default=datetime.now())
     user = orm.relationship('User')

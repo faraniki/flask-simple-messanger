@@ -23,7 +23,7 @@ class TextForm(FlaskForm):
 
 
 class ChatInviteForm(FlaskForm):
-    user_id = StringField("user_id", validators=[DataRequired()])
+    user_login = StringField("user_login", validators=[DataRequired()])
     submit = SubmitField('invite')
 
 

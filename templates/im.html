@@ -11,7 +11,7 @@
                 <div style="display: flex; flex-direction: column; width: 100%;">
                     <span>
                         {% if message_box[0].user_login == current_user.login %}
-                            <a style="padding-left: 20px;">You</a>
+                            <a style="padding-left: 20px;"><b>You</b></a>
                         {% else %}
                             <a style="padding-left: 20px;">{{ message_box[0].user_login }}</a>
                         {% endif %}
